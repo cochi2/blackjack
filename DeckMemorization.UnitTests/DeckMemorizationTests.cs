@@ -11,10 +11,16 @@ namespace DeckMemorization.UnitTests
     [TestClass]
     public class DeckMemorizationTests
     {
+        Deck deck;
+
+        [TestInitialize]
+        public void Setup()
+        {
+            deck = new Deck();
+        }
         [TestMethod]
         public void WhenDeckDealsACardACardIsReceived()
         {
-            Deck deck = new Deck();
             Card cardReceived = deck.DealCard();
             cardReceived.ShouldNotBeNull();
             cardReceived.Value.ShouldBeOneOf(expected: (CardValue[])Enum.GetValues(typeof(CardValue)).Cast<CardValue>());
@@ -22,27 +28,59 @@ namespace DeckMemorization.UnitTests
         }
 
         [TestMethod]
-        public void WhenTwoCardsAreDealtTheyAreDifferent()
+        public void WhenMultipleCardsAreDealtTheyAreDifferent()
         {
-            Deck deck = new Deck();
-            Card card1 = deck.DealCard();
-            Card card2 = deck.DealCard();
-            card1.ShouldNotBe(card2);
+            int numberOfCards = Deck.MaxNumberOfCards;
+            Card[] cards = GetAsManyCardsOfDeck(numberOfCards);
+
+            AssertCardsAreUnique(cards);
+            AssertDeckCardsValuesAreDefined(cards);
         }
 
+        private void AssertDeckCardsValuesAreDefined(Card[] cards)
+        {
+            foreach (var card in cards)
+            {
+                AssertCardValuesAreDefined(card);
+            }
+        }
+        
+        private void AssertCardValuesAreDefined(Card card)
+        {
+            Enum.IsDefined(typeof(CardValue), card.Value).ShouldBeTrue();
+            Enum.IsDefined(typeof(CardKind), card.Kind).ShouldBeTrue();
+        }
+        
+        private void AssertCardsAreUnique(Card[] cards)
+        {
+            var set = new HashSet<Card>();
+            foreach (var card in cards)
+            {
+                set.Add(card).ShouldBeTrue();
+            }
+        }
 
-        [Ignore]
+        private Card[] GetAsManyCardsOfDeck(int numberOfCards)
+        {
+            var cards = new Card[numberOfCards];
+            for (int i = 0; i < numberOfCards; i++)
+            {
+                cards[i] = deck.DealCard();
+            }
+
+            return cards;
+        }
+
         [TestMethod]
-        public void ADeckContains52DifferentCards()
+        public void WhenAskedForMoreThan52CardsReceiveException()
         {
-            //var cards = new HashSet<Card>(comparer: new CardComparer());
-            //var deck = new Deck();
-
-            //for (int i = 0; i < 52; i++)
-            //{
-            //    var card = deck.DealCard();
-            //    cards.Add(card).ShouldBeTrue();
-            //}
+            for (int i = 0; i < Deck.MaxNumberOfCards; i++)
+            {
+                deck.DealCard();
+            }
+            deck.DealCard().ShouldBeNull();
         }
+
+        
     }
 }

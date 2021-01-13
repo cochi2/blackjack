@@ -8,20 +8,35 @@ namespace DeckMemorization
 {
     public enum CardValue
     {
-        Ace
+        Ace,
+        Two,
+        Three,
+        Four,
+        Five,
+        Six,
+        Seven,
+        Eight,
+        Nine,
+        Ten,
+        Jack,
+        Queen,
+        King
     }
 
     public enum CardKind
     {
-        Spades
+        Spades,
+        Hearts,
+        Diamonds,
+        Clubs
     }
     
     public class Card
     {
-        public Card()
+        public Card(int value, int kind)
         {
-            Value = CardValue.Ace;
-            Kind = CardKind.Spades;
+            Value = (CardValue)value;
+            Kind = (CardKind)kind;
         }
 
         public CardValue Value { get; }
@@ -39,11 +54,6 @@ namespace DeckMemorization
         public override int GetHashCode()
         {
             return (int)Value + (int)Kind;
-        }
-
-        public override string ToString()
-        {
-            return $"{Value} of {Kind}";
         }
     }
 }
