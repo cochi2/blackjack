@@ -20,7 +20,8 @@ namespace DeckMemorization
         Ten,
         Jack,
         Queen,
-        King
+        King, 
+        None
     }
 
     public enum CardKind
@@ -28,7 +29,8 @@ namespace DeckMemorization
         Spades,
         Hearts,
         Diamonds,
-        Clubs
+        Clubs, 
+        None
     }
     
     public class Card
@@ -42,6 +44,11 @@ namespace DeckMemorization
         public CardValue Value { get; }
         public CardKind Kind { get; }
 
+        public bool IsEmpty()
+        {
+            return Value == CardValue.None && Kind == CardKind.None;
+        }
+
         public override bool Equals(object obj)
         {
             if ((obj == null) || !this.GetType().Equals(obj.GetType()))
@@ -54,6 +61,16 @@ namespace DeckMemorization
         public override int GetHashCode()
         {
             return (int)Value + (int)Kind;
+        }
+
+        public static bool operator ==(Card card1, Card card2)
+        {
+            return card1.Equals(card2);
+        }
+
+        public static bool operator !=(Card card1, Card card2)
+        {
+            return !card1.Equals(card2);
         }
     }
 }

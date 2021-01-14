@@ -11,17 +11,19 @@ namespace DeckMemorization.UnitTests
     [TestClass]
     public class DeckMemorizationTests
     {
-        Deck deck;
+        const int MaxNumberOfCards = 52;
+        Deck Deck;
 
         [TestInitialize]
         public void Setup()
         {
-            deck = new Deck();
+            Deck = DeckFactory.CreateSortedDeck();
         }
+
         [TestMethod]
         public void WhenDeckDealsACardACardIsReceived()
         {
-            Card cardReceived = deck.DealCard();
+            Card cardReceived = Deck.DealCard();
             cardReceived.ShouldNotBeNull();
             cardReceived.Value.ShouldBeOneOf(expected: (CardValue[])Enum.GetValues(typeof(CardValue)).Cast<CardValue>());
             cardReceived.Kind.ShouldBeOneOf(expected: (CardKind[])Enum.GetValues(typeof(CardKind)).Cast<CardKind>());
@@ -30,57 +32,71 @@ namespace DeckMemorization.UnitTests
         [TestMethod]
         public void WhenMultipleCardsAreDealtTheyAreDifferent()
         {
-            int numberOfCards = Deck.MaxNumberOfCards;
+            int numberOfCards = MaxNumberOfCards;
             Card[] cards = GetAsManyCardsOfDeck(numberOfCards);
 
             AssertCardsAreUnique(cards);
             AssertDeckCardsValuesAreDefined(cards);
         }
 
+        private Card[] GetAsManyCardsOfDeck(int numberOfCards)
+        {
+            var cards = new Card[numberOfCards];
+            for (int i = 0; i < numberOfCards; i++)
+                cards[i] = Deck.DealCard();
+
+            return cards;
+        }
+
+        private void AssertCardsAreUnique(Card[] cards)
+        {
+            var set = new HashSet<Card>();
+            foreach (var card in cards)
+                set.Add(card).ShouldBeTrue();
+        }
+
         private void AssertDeckCardsValuesAreDefined(Card[] cards)
         {
             foreach (var card in cards)
-            {
                 AssertCardValuesAreDefined(card);
-            }
         }
-        
+
         private void AssertCardValuesAreDefined(Card card)
         {
             Enum.IsDefined(typeof(CardValue), card.Value).ShouldBeTrue();
             Enum.IsDefined(typeof(CardKind), card.Kind).ShouldBeTrue();
         }
-        
-        private void AssertCardsAreUnique(Card[] cards)
-        {
-            var set = new HashSet<Card>();
-            foreach (var card in cards)
-            {
-                set.Add(card).ShouldBeTrue();
-            }
-        }
 
-        private Card[] GetAsManyCardsOfDeck(int numberOfCards)
+        [TestMethod]
+        public void WhenAskedForMoreThan52CardsReceiveEmptyCard()
         {
-            var cards = new Card[numberOfCards];
-            for (int i = 0; i < numberOfCards; i++)
-            {
-                cards[i] = deck.DealCard();
-            }
-
-            return cards;
+            GetAsManyCardsOfDeck(MaxNumberOfCards);
+            Deck.DealCard().IsEmpty().ShouldBeTrue();
         }
 
         [TestMethod]
-        public void WhenAskedForMoreThan52CardsReceiveException()
+        public void WhenDeckIsShuffledCardsAreNotInOrder()
         {
-            for (int i = 0; i < Deck.MaxNumberOfCards; i++)
+            var shuffledDeck = DeckFactory.CreateShuffledDeck();
+            var cardsInPosition = 0;
+            for (int i = 0; i < MaxNumberOfCards; i++)
             {
-                deck.DealCard();
+                var sortedCard = Deck.DealCard();
+                var shuffledCard = shuffledDeck.DealCard();
+                AssertCardsAreNotEmpty(sortedCard, shuffledCard);
+                if (sortedCard == shuffledCard)
+                    cardsInPosition++;
             }
-            deck.DealCard().ShouldBeNull();
+            cardsInPosition.ShouldBeLessThan(MaxNumberOfCards);
         }
 
-        
+        private static void AssertCardsAreNotEmpty(params Card[] cards)
+        {
+            foreach (var card in cards)
+            {
+                card.IsEmpty().ShouldBeFalse();
+            }
+        }
+
     }
 }
