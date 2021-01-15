@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DeckMemorization
+namespace Deck
 {
     public enum CardValue
     {
@@ -35,6 +35,8 @@ namespace DeckMemorization
     
     public class Card
     {
+        public static readonly Card EmptyCard = new Card((int)CardValue.None, (int)CardKind.None);
+
         public Card(int value, int kind)
         {
             Value = (CardValue)value;

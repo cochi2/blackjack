@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DeckMemorization
+namespace Deck
 {
     public abstract class Deck
     {
         protected const int MaxNumberOfCards = 52;
         protected const int CardsOfSameKind = 13;
-        protected readonly Card EmptyCard = new Card((int)CardValue.None, (int)CardKind.None);
+        
         protected int currentCard;
         protected int[] cards;
         
@@ -23,7 +23,7 @@ namespace DeckMemorization
         public Card DealCard()
         {
             if (currentCard >= MaxNumberOfCards)
-                return EmptyCard;
+                return Card.EmptyCard;
 
             var card = new Card(cards[currentCard] % CardsOfSameKind, cards[currentCard] / CardsOfSameKind);
             currentCard++;

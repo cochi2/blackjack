@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{74A79A4A-2C29-4296-9999-843DD2084B32}</ProjectGuid>
+    <ProjectGuid>{4E42ADCC-F6C1-49B2-AC59-1FAE257C277D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DeckMemorization</RootNamespace>
@@ -43,7 +43,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Card.cs" />
-    <Compile Include="DeckFactory.cs" />
     <Compile Include="Deck.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
