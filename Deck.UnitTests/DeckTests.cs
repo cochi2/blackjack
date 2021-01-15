@@ -1,12 +1,10 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-namespace DeckMemorization.UnitTests
+namespace Deck.UnitTests
 {
     [TestClass]
     public class DeckMemorizationTests
@@ -17,7 +15,7 @@ namespace DeckMemorization.UnitTests
         [TestInitialize]
         public void Setup()
         {
-            Deck = DeckFactory.CreateSortedDeck();
+            Deck = Deck.GetSortedDeck();
         }
 
         [TestMethod]
@@ -77,7 +75,7 @@ namespace DeckMemorization.UnitTests
         [TestMethod]
         public void WhenDeckIsShuffledCardsAreNotInOrder()
         {
-            var shuffledDeck = DeckFactory.CreateShuffledDeck();
+            var shuffledDeck = Deck.GetShuffledDeck();
             var cardsInPosition = 0;
             for (int i = 0; i < MaxNumberOfCards; i++)
             {
