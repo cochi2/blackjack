@@ -1,6 +1,7 @@
 using Deck;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shouldly;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -30,9 +31,8 @@ namespace Dealer.UnitTests
         {
             var set = new HashSet<Card>();
             for(int i = 0; i < 52; i++)
-            {
                 set.Add(dealer.DealACard()).ShouldBeTrue();
-            }
+            
             dealer.DealACard().IsEmpty().ShouldBeTrue();
         }
 
@@ -40,11 +40,22 @@ namespace Dealer.UnitTests
         public void DealerDealsCardsWithVariableSpeed()
         {
             var speedMilis = 10;
+            var elapsedMilis = GetMethodPerformance(() => GetAllCardsWithDelay(speedMilis));
+            elapsedMilis.ShouldBeGreaterThanOrEqualTo(speedMilis * 52);
+        }
+
+        private long GetMethodPerformance(Action a)
+        {
             var sw = new Stopwatch();
             sw.Start();
-            foreach(var _ in dealer.DealAllCardsWithDelay(speedMilis)) ;
+            a.Invoke();
             sw.Stop();
-            sw.ElapsedMilliseconds.ShouldBeGreaterThanOrEqualTo(speedMilis * 52);
+            return sw.ElapsedMilliseconds;
+        }
+
+        private void GetAllCardsWithDelay(int speedMilis)
+        {
+            foreach (var _ in dealer.DealAllCardsWithDelay(speedMilis)) ;
         }
     }
 }
